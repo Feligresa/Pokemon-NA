@@ -222,6 +222,37 @@ class Battle:
                             return "game_over_enemy"
 
 
+    def swap_pokemon_in_battle(self, slot):
+        if self.spieler_poke_team[slot].currentkp > 0:
+            self.spieler_active_poke = self.spieler_poke_team[slot]
+            self.spieler_poke_team[slot] = self.spieler_poke_team[0]
+            self.spieler_poke_team[0] = self.spieler_active_poke
+            enemy_moves = ["attack_physic", "attack_special"]
+            self.enemy_move = random.choice(enemy_moves)
+            if self.enemy_move == "attack_physic":
+                self.spieler_active_poke.currentkp -= self.enemy_attack_physic()  # Gegnerattacke
+                if self.spieler_active_poke.currentkp <= 0:
+                    # Spieler Pokemon austauschen bzw Game Over
+                    moved_pokemon = self.spieler_active_poke
+                    self.spieler_poke_team.remove(moved_pokemon)
+                    self.player_dead_pokemon.append(moved_pokemon)
+                    if len(self.spieler_poke_team) >= 1:
+                        self.spieler_active_poke = self.spieler_poke_team[0]
+                    else:
+                        return "game_over_player"
+            elif self.enemy_move == "attack_special":
+                self.spieler_active_poke.currentkp -= self.enemy_attack_special()  # Gegnerattacke
+                if self.spieler_active_poke.currentkp <= 0:
+                    # Spieler Pokemon austauschen bzw Game Over
+                    moved_pokemon = self.spieler_active_poke
+                    self.spieler_poke_team.remove(moved_pokemon)
+                    self.player_dead_pokemon.append(moved_pokemon)
+                    if len(self.spieler_poke_team) >= 1:
+                        self.spieler_active_poke = self.spieler_poke_team[0]
+                    else:
+                        return "game_over_player"
+
+
     # Spieler Pokemon Team resetten
     def reset_player_team(self):
         # Alle Pokemon ins Spieler Team zurück
